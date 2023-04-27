@@ -53,14 +53,7 @@ public class GamePanel extends JPanel implements Runnable {
         double drawInterval = 1000000000/FPS;
         double nextDrawTime = System.nanoTime() + drawInterval;
 
-        for(int i = 0; i < 16; i++){
-            for (int j = 0; j < 8; j++){
-                if (rand.nextInt(100)<20){
-                    mines[i][j] = 1;
-                }
-                else mines[i][j] = 0;
-            }
-        }
+        init();
 
         while (gameThread != null) {
             update();
@@ -82,6 +75,166 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    public void init() {
+        for(int i = 0; i < 16; i++){
+            for (int j = 0; j < 8; j++){
+                if (rand.nextInt(100)<20){
+                    mines[i][j] = 1;
+                }
+                else mines[i][j] = 0;
+            }
+        }
+
+        for(int i = 0; i < 16; i++){
+            for (int j = 0; j < 8; j++){
+                neighbors[i][j] = 0;
+
+                if(i == 0 && j == 0) {
+                    if (mines[i+1][j] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i][j+1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i+1][j+1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                }
+                else if(i == 0 && j == 7) {
+                    if (mines[i][j] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i][j-1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i+1][j-1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                }
+                else if(i == 15 && j == 0) {
+                    if (mines[i-1][j] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i-1][j+1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i][j+1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                }
+                else if(i == 15 && j == 7) {
+                    if (mines[i-1][j] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i-1][j-1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i][j-1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                }
+                else if (i == 0){
+                    if (mines[i][j-1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i+1][j-1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i+1][j] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i][j+1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i+1][j+1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                }
+                else if (i == 15){
+                    if (mines[i-1][j-1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i][j-1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i-1][j] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i-1][j+1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i][j+1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                }
+                else if (j == 7){
+                    if (mines[i-1][j-1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i][j-1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i+1][j-1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i-1][j] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i+1][j] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                }
+                else if (j == 0){
+                    if (mines[i-1][j] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i+1][j] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i-1][j+1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i][j+1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i+1][j+1] == 1){
+                        neighbors[i][j] += 1;
+                    }
+                }
+                else {
+                    if (mines[i - 1][j - 1] == 1) {
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i][j - 1] == 1) {
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i + 1][j - 1] == 1) {
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i - 1][j] == 1) {
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i + 1][j] == 1) {
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i - 1][j + 1] == 1) {
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i][j + 1] == 1) {
+                        neighbors[i][j] += 1;
+                    }
+                    if (mines[i + 1][j + 1] == 1) {
+                        neighbors[i][j] += 1;
+                    }
+                }
+
+                if (mines[i][j] == 1) {
+                    neighbors[i][j] = -1;
+                }
+            }
+        }
+    }
+
     public void update() {
 
     }
@@ -91,13 +244,30 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2 = (Graphics2D) g;
 
-        //test mines
+        g2.setColor(Color.white);
+        g2.fillRect(spacing, spacing,139,60-2*spacing);
+        g2.fillRect(720+spacing, spacing,60-2*spacing,60-2*spacing);
+
+        g2.setFont(new Font("Tahoma", Font.BOLD, 40));
+        g2.setColor(Color.black);
+        g2.drawString("UNDO",12,45);
+        g2.drawString("FLAG",732,45);
+
+
         for(int i = 0; i < 16; i++){
             for (int j = 0; j < 8; j++){
                 if (mines[i][j] == 1){
                     g2.setColor(Color.red);
-                } else g2.setColor(Color.gray);
+                } else if (revealed[i][j]){
+                    g2.setColor(Color.lightGray);
+                } else
+                    g2.setColor(Color.gray);
                 g2.fillRect(spacing+i*60, spacing+j*60+60,60-2*spacing,60-2*spacing);
+
+                if (revealed[i][j]){
+                    g2.setColor(Color.black);
+                    g2.drawString(Integer.toString(neighbors[i][j]),i*60+16,j*60+60+45);
+                }
             }
         }
 
@@ -144,6 +314,7 @@ public class GamePanel extends JPanel implements Runnable {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (inBoxX() != -1 && inBoxY() != -1) {
+                revealed[inBoxX()][inBoxY()] = true;
             }
         }
 
