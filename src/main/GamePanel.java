@@ -5,7 +5,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.Stack;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -21,10 +23,25 @@ public class GamePanel extends JPanel implements Runnable {
 
     final int FPS = 60;
 
-    int[][] mines = new int[16][8];
-    int[][] neighbors = new int[16][8];
-    boolean[][] revealed = new boolean[16][8];
-    boolean[][] flagged = new boolean[16][8];
+    final int maxBoardCol = maxScreenCol;
+    final int maxBoardRow = maxScreenRow-1;
+    int[][] mines = new int[maxBoardCol][maxBoardRow];
+    int[][] numbers = new int[maxBoardCol][maxBoardRow];
+    boolean[][] revealed = new boolean[maxBoardCol][maxBoardRow];
+    Stack<boolean[][]> undoStack = new Stack<boolean[][]>();
+
+    boolean gameWin = false;
+    boolean gameLose = false;
+
+    public void undoMove() {
+        // restore the previous game state from the undo stack
+        if (!undoStack.empty()) {
+            boolean[][] prevState = undoStack.pop();
+            for (int i = 0; i < maxBoardCol; i++) {
+                revealed[i] = Arrays.copyOf(prevState[i], maxBoardRow);
+            }
+        }
+    }
 
     Random rand = new Random();
 
@@ -39,6 +56,166 @@ public class GamePanel extends JPanel implements Runnable {
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
+    }
+
+    public void init() {
+        for(int i = 0; i < maxBoardCol; i++){
+            for (int j = 0; j < maxBoardRow; j++){
+                if (rand.nextInt(100)<20){
+                    mines[i][j] = 1;
+                }
+                else mines[i][j] = 0;
+            }
+        }
+
+        for(int i = 0; i < maxBoardCol; i++){
+            for (int j = 0; j < maxBoardRow; j++){
+                numbers[i][j] = 0;
+
+                if(i == 0 && j == 0) {
+                    if (mines[i+1][j] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i][j+1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i+1][j+1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                }
+                else if(i == 0 && j == 7) {
+                    if (mines[i][j] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i][j-1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i+1][j-1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                }
+                else if(i == 15 && j == 0) {
+                    if (mines[i-1][j] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i-1][j+1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i][j+1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                }
+                else if(i == 15 && j == 7) {
+                    if (mines[i-1][j] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i-1][j-1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i][j-1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                }
+                else if (i == 0){
+                    if (mines[i][j-1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i+1][j-1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i+1][j] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i][j+1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i+1][j+1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                }
+                else if (i == 15){
+                    if (mines[i-1][j-1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i][j-1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i-1][j] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i-1][j+1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i][j+1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                }
+                else if (j == 7){
+                    if (mines[i-1][j-1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i][j-1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i+1][j-1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i-1][j] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i+1][j] == 1){
+                        numbers[i][j] += 1;
+                    }
+                }
+                else if (j == 0){
+                    if (mines[i-1][j] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i+1][j] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i-1][j+1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i][j+1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i+1][j+1] == 1){
+                        numbers[i][j] += 1;
+                    }
+                }
+                else {
+                    if (mines[i - 1][j - 1] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i][j - 1] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i + 1][j - 1] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i - 1][j] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i + 1][j] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i - 1][j + 1] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i][j + 1] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i + 1][j + 1] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                }
+
+                if (mines[i][j] == 1) {
+                    numbers[i][j] = -1;
+                }
+            }
+        }
     }
 
     @Override
@@ -75,168 +252,9 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    public void init() {
-        for(int i = 0; i < 16; i++){
-            for (int j = 0; j < 8; j++){
-                if (rand.nextInt(100)<20){
-                    mines[i][j] = 1;
-                }
-                else mines[i][j] = 0;
-            }
-        }
-
-        for(int i = 0; i < 16; i++){
-            for (int j = 0; j < 8; j++){
-                neighbors[i][j] = 0;
-
-                if(i == 0 && j == 0) {
-                    if (mines[i+1][j] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i][j+1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i+1][j+1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                }
-                else if(i == 0 && j == 7) {
-                    if (mines[i][j] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i][j-1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i+1][j-1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                }
-                else if(i == 15 && j == 0) {
-                    if (mines[i-1][j] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i-1][j+1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i][j+1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                }
-                else if(i == 15 && j == 7) {
-                    if (mines[i-1][j] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i-1][j-1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i][j-1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                }
-                else if (i == 0){
-                    if (mines[i][j-1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i+1][j-1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i+1][j] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i][j+1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i+1][j+1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                }
-                else if (i == 15){
-                    if (mines[i-1][j-1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i][j-1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i-1][j] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i-1][j+1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i][j+1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                }
-                else if (j == 7){
-                    if (mines[i-1][j-1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i][j-1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i+1][j-1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i-1][j] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i+1][j] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                }
-                else if (j == 0){
-                    if (mines[i-1][j] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i+1][j] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i-1][j+1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i][j+1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i+1][j+1] == 1){
-                        neighbors[i][j] += 1;
-                    }
-                }
-                else {
-                    if (mines[i - 1][j - 1] == 1) {
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i][j - 1] == 1) {
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i + 1][j - 1] == 1) {
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i - 1][j] == 1) {
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i + 1][j] == 1) {
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i - 1][j + 1] == 1) {
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i][j + 1] == 1) {
-                        neighbors[i][j] += 1;
-                    }
-                    if (mines[i + 1][j + 1] == 1) {
-                        neighbors[i][j] += 1;
-                    }
-                }
-
-                if (mines[i][j] == 1) {
-                    neighbors[i][j] = -1;
-                }
-            }
-        }
-    }
-
     public void update() {
-
+        checkLose();
+        checkWin();
     }
 
     public void paintComponent(Graphics g) {
@@ -244,18 +262,25 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2 = (Graphics2D) g;
 
+        // Draw undo button
         g2.setColor(Color.white);
-        g2.fillRect(spacing, spacing,139,60-2*spacing);
-        g2.fillRect(720+spacing, spacing,60-2*spacing,60-2*spacing);
-
+        g2.fillRect(spacing, spacing,140,60-2*spacing);
         g2.setFont(new Font("Tahoma", Font.BOLD, 40));
         g2.setColor(Color.black);
         g2.drawString("UNDO",12,45);
-        g2.drawString("FLAG",732,45);
 
+        // Draw win/lose button
+        if (gameLose) {
+            g2.setColor(Color.white);
+            g2.drawString("LOSE", 600, 45);
+        } else if (gameWin) {
+            g2.setColor(Color.white);
+            g2.drawString("WIN",600,45);
+        }
 
-        for(int i = 0; i < 16; i++){
-            for (int j = 0; j < 8; j++){
+        // Draw board
+        for(int i = 0; i < maxBoardCol; i++){
+            for (int j = 0; j < maxBoardRow; j++){
                 if (mines[i][j] == 1){
                     g2.setColor(Color.red);
                 } else if (revealed[i][j]){
@@ -266,11 +291,12 @@ public class GamePanel extends JPanel implements Runnable {
 
                 if (revealed[i][j]){
                     g2.setColor(Color.black);
-                    g2.drawString(Integer.toString(neighbors[i][j]),i*60+16,j*60+60+45);
+                    g2.drawString(Integer.toString(numbers[i][j]),i*60+maxBoardCol,j*60+60+45);
                 }
             }
         }
 
+        // Highlight mouse
         if (inBoxX() != -1 && inBoxY() != -1) {
             int x = inBoxX();
             int y = inBoxY();
@@ -281,13 +307,44 @@ public class GamePanel extends JPanel implements Runnable {
         g2.dispose();
     }
 
+    // Implement check for win conditions
+    public void checkWin () {
+        for (int i = 0; i < maxBoardCol; i++) {
+            for (int j = 0;j < maxBoardRow ; j++) {
+                if (numbers[i][j]>0) {
+                    if (!revealed[i][j]){
+                        gameWin = false;
+                        return;
+                    }
+                }
+            }
+        }
+        gameWin = true;
+    }
+
+    // Implement check for lose conditions
+    public void checkLose () {
+        gameLose = false;
+        for (int i = 0; i < maxBoardCol; i++) {
+            for (int j = 0;j < maxBoardRow ; j++) {
+                if (numbers[i][j]<0) {
+                    if (revealed[i][j]){
+                        gameLose = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    // Check position x-axis if in mines box
     public int inBoxX() {
-        for (int i = 0; i < 16; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < maxBoardCol; i++) {
+            for (int j = 0; j < maxBoardRow; j++) {
                 if(mouseX >= spacing+i*60
-                        && mouseX <= 60-spacing+i*60
-                        && mouseY >= spacing + j*60 + 60
-                        && mouseY <= j*80 + 120-spacing){
+                    && mouseX <= 60-spacing+i*60
+                    && mouseY >= spacing + j*60 + 60
+                    && mouseY <= j*60 + 120-spacing){
                     return i;
                 }
             }
@@ -295,13 +352,14 @@ public class GamePanel extends JPanel implements Runnable {
         return -1;
     }
 
+    // Check position y-axis if in mines box
     public int inBoxY() {
-        for (int i = 0; i < 16; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < maxBoardCol; i++) {
+            for (int j = 0; j < maxBoardRow; j++) {
                 if(mouseX >= spacing+i*60
-                        && mouseX <= 60-spacing+i*60
-                        && mouseY >= spacing + j*60 + 60
-                        && mouseY <= j*60 + 120-spacing){
+                    && mouseX <= 60-spacing+i*60
+                    && mouseY >= spacing + j*60 + 60
+                    && mouseY <= j*60 + 120-spacing){
                     return j;
                 }
             }
@@ -309,12 +367,27 @@ public class GamePanel extends JPanel implements Runnable {
         return -1;
     }
 
+    // Check position x-axis if in undo box
+    public boolean inUndoBox() {
+        if(mouseX >= spacing
+            && mouseX <= 139+spacing
+            && mouseY >= spacing
+            && mouseY <= 60-spacing){
+        }
+        return false;
+    }
+
+    // Click function for mouse
     public class Click implements MouseListener {
 
         @Override
         public void mouseClicked(MouseEvent e) {
             if (inBoxX() != -1 && inBoxY() != -1) {
                 revealed[inBoxX()][inBoxY()] = true;
+            }
+
+            if (inUndoBox()) {
+                undoMove();
             }
         }
 
@@ -339,6 +412,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    // Move function for mouse
     public class Move implements MouseMotionListener {
 
 
