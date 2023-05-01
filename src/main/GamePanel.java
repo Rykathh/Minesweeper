@@ -28,7 +28,7 @@ public class GamePanel extends JPanel implements Runnable {
     int[][] mines = new int[maxBoardCol][maxBoardRow];
     int[][] numbers = new int[maxBoardCol][maxBoardRow];
     boolean[][] revealed = new boolean[maxBoardCol][maxBoardRow];
-    Stack<boolean[][]> undoStack = new Stack<boolean[][]>();
+    Stack<int[]> undoStack = new Stack<int[]>();
 
     boolean gameWin = false;
     boolean gameLose = false;
@@ -36,10 +36,8 @@ public class GamePanel extends JPanel implements Runnable {
     public void undoMove() {
         // restore the previous game state from the undo stack
         if (!undoStack.empty()) {
-            boolean[][] prevState = undoStack.pop();
-            for (int i = 0; i < maxBoardCol; i++) {
-                revealed[i] = Arrays.copyOf(prevState[i], maxBoardRow);
-            }
+            int[] prevState = undoStack.pop();
+            revealed[prevState[0]][prevState[1]] = false;
         }
     }
 
@@ -61,7 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void init() {
         for(int i = 0; i < maxBoardCol; i++){
             for (int j = 0; j < maxBoardRow; j++){
-                if (rand.nextInt(100)<20){
+                if (rand.nextInt(100)<15){
                     mines[i][j] = 1;
                 }
                 else mines[i][j] = 0;
@@ -281,7 +279,7 @@ public class GamePanel extends JPanel implements Runnable {
         // Draw board
         for(int i = 0; i < maxBoardCol; i++){
             for (int j = 0; j < maxBoardRow; j++){
-                if (mines[i][j] == 1){
+                if (revealed[i][j] && mines[i][j] == 1){
                     g2.setColor(Color.red);
                 } else if (revealed[i][j]){
                     g2.setColor(Color.lightGray);
@@ -289,7 +287,10 @@ public class GamePanel extends JPanel implements Runnable {
                     g2.setColor(Color.gray);
                 g2.fillRect(spacing+i*60, spacing+j*60+60,60-2*spacing,60-2*spacing);
 
-                if (revealed[i][j]){
+                if (revealed[i][j] && mines[i][j] == 1){
+                    g2.setColor(Color.black);
+                    g2.drawString("*",i*60+maxBoardCol+2,j*60+60+50);
+                } else if (revealed[i][j]){
                     g2.setColor(Color.black);
                     g2.drawString(Integer.toString(numbers[i][j]),i*60+maxBoardCol,j*60+60+45);
                 }
@@ -370,11 +371,18 @@ public class GamePanel extends JPanel implements Runnable {
     // Check position x-axis if in undo box
     public boolean inUndoBox() {
         if(mouseX >= spacing
-            && mouseX <= 139+spacing
+            && mouseX <= 140+spacing
             && mouseY >= spacing
-            && mouseY <= 60-spacing){
+            && mouseY <= 60-spacing) {
+            return true;
         }
         return false;
+    }
+
+    public void revealBox(int x, int y) {
+        revealed[x][y] = true;
+        int[] coordinate = {x,y};
+        undoStack.push(coordinate);
     }
 
     // Click function for mouse
@@ -383,7 +391,7 @@ public class GamePanel extends JPanel implements Runnable {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (inBoxX() != -1 && inBoxY() != -1) {
-                revealed[inBoxX()][inBoxY()] = true;
+                revealBox(inBoxX(),inBoxY());
             }
 
             if (inUndoBox()) {
