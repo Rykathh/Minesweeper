@@ -17,7 +17,7 @@ public class Board {
     boolean click = true;
 
     private static Board board = new Board();
-    private Board(){
+    private Board() {
         init();
     }
 
@@ -45,7 +45,7 @@ public class Board {
         for (int i = 0; i < maxBoardCol; i++) {
             for (int j = 0;j < maxBoardRow ; j++) {
                 if (numbers[i][j]>0) {
-                    if (!revealed[i][j]){
+                    if (!revealed[i][j]) {
                         gameWin = false;
                         click = false;
                         return;
@@ -63,7 +63,7 @@ public class Board {
         for (int i = 0; i < maxBoardCol; i++) {
             for (int j = 0;j < maxBoardRow ; j++) {
                 if (numbers[i][j]<0) {
-                    if (revealed[i][j]){
+                    if (revealed[i][j]) {
                         gameLose = true;
                         undoStack.clear();
                         click = false;
@@ -74,136 +74,144 @@ public class Board {
         }
     }
 
+    public void revealAll() {
+        for (int i = 0; i < maxBoardCol; i++) {
+            for (int j = 0; j < maxBoardRow; j++) {
+                revealed[i][j] = true;
+            }
+        }
+    }
+
     public void revealBox(int x, int y) {
         revealed[x][y] = true;
         int[] coordinate = {x,y};
-        undoStack.push(coordinate
+        undoStack.push(coordinate);
     }
 
     public void init() {
         Random rand = new Random();
-        for(int i = 0; i < maxBoardCol; i++){
-            for (int j = 0; j < maxBoardRow; j++){
-                if (rand.nextInt(100)<15){
+        for (int i = 0; i < maxBoardCol; i++) {
+            for (int j = 0; j < maxBoardRow; j++) {
+                if (rand.nextInt(100)<15) {
                     mines[i][j] = 1;
                 }
                 else mines[i][j] = 0;
             }
         }
 
-        for(int i = 0; i < maxBoardCol; i++){
-            for (int j = 0; j < maxBoardRow; j++){
+        for (int i = 0; i < maxBoardCol; i++) {
+            for (int j = 0; j < maxBoardRow; j++) {
                 numbers[i][j] = 0;
 
                 if(i == 0 && j == 0) {
-                    if (mines[i+1][j] == 1){
+                    if (mines[i+1][j] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i][j+1] == 1){
+                    if (mines[i][j+1] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i+1][j+1] == 1){
+                    if (mines[i+1][j+1] == 1) {
                         numbers[i][j] += 1;
                     }
                 }
                 else if(i == 0 && j == 7) {
-                    if (mines[i][j] == 1){
+                    if (mines[i][j] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i][j-1] == 1){
+                    if (mines[i][j-1] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i+1][j-1] == 1){
+                    if (mines[i+1][j-1] == 1) {
                         numbers[i][j] += 1;
                     }
                 }
                 else if(i == 15 && j == 0) {
-                    if (mines[i-1][j] == 1){
+                    if (mines[i-1][j] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i-1][j+1] == 1){
+                    if (mines[i-1][j+1] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i][j+1] == 1){
+                    if (mines[i][j+1] == 1) {
                         numbers[i][j] += 1;
                     }
                 }
                 else if(i == 15 && j == 7) {
-                    if (mines[i-1][j] == 1){
+                    if (mines[i-1][j] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i-1][j-1] == 1){
+                    if (mines[i-1][j-1] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i][j-1] == 1){
-                        numbers[i][j] += 1;
-                    }
-                }
-                else if (i == 0){
-                    if (mines[i][j-1] == 1){
-                        numbers[i][j] += 1;
-                    }
-                    if (mines[i+1][j-1] == 1){
-                        numbers[i][j] += 1;
-                    }
-                    if (mines[i+1][j] == 1){
-                        numbers[i][j] += 1;
-                    }
-                    if (mines[i][j+1] == 1){
-                        numbers[i][j] += 1;
-                    }
-                    if (mines[i+1][j+1] == 1){
+                    if (mines[i][j-1] == 1) {
                         numbers[i][j] += 1;
                     }
                 }
-                else if (i == 15){
-                    if (mines[i-1][j-1] == 1){
+                else if (i == 0) {
+                    if (mines[i][j-1] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i][j-1] == 1){
+                    if (mines[i+1][j-1] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i-1][j] == 1){
+                    if (mines[i+1][j] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i-1][j+1] == 1){
+                    if (mines[i][j+1] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i][j+1] == 1){
-                        numbers[i][j] += 1;
-                    }
-                }
-                else if (j == 7){
-                    if (mines[i-1][j-1] == 1){
-                        numbers[i][j] += 1;
-                    }
-                    if (mines[i][j-1] == 1){
-                        numbers[i][j] += 1;
-                    }
-                    if (mines[i+1][j-1] == 1){
-                        numbers[i][j] += 1;
-                    }
-                    if (mines[i-1][j] == 1){
-                        numbers[i][j] += 1;
-                    }
-                    if (mines[i+1][j] == 1){
+                    if (mines[i+1][j+1] == 1) {
                         numbers[i][j] += 1;
                     }
                 }
-                else if (j == 0){
-                    if (mines[i-1][j] == 1){
+                else if (i == 15) {
+                    if (mines[i-1][j-1] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i+1][j] == 1){
+                    if (mines[i][j-1] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i-1][j+1] == 1){
+                    if (mines[i-1][j] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i][j+1] == 1){
+                    if (mines[i-1][j+1] == 1) {
                         numbers[i][j] += 1;
                     }
-                    if (mines[i+1][j+1] == 1){
+                    if (mines[i][j+1] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                }
+                else if (j == 7) {
+                    if (mines[i-1][j-1] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i][j-1] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i+1][j-1] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i-1][j] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i+1][j] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                }
+                else if (j == 0) {
+                    if (mines[i-1][j] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i+1][j] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i-1][j+1] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i][j+1] == 1) {
+                        numbers[i][j] += 1;
+                    }
+                    if (mines[i+1][j+1] == 1) {
                         numbers[i][j] += 1;
                     }
                 }

@@ -52,7 +52,7 @@ public class GamePanel extends JPanel implements Runnable {
                 double remainingTime = nextDrawTime - System.nanoTime();
                 remainingTime = remainingTime/1000000;
 
-                if (remainingTime < 0){
+                if (remainingTime < 0) {
                     remainingTime = 0;
                 }
 
@@ -67,6 +67,9 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         Board.getInstance().checkLose();
         Board.getInstance().checkWin();
+        if (Board.getInstance().gameLose || Board.getInstance().gameWin) {
+            Board.getInstance().revealAll();
+        }
     }
 
     public void paintComponent(Graphics g) {
@@ -100,20 +103,20 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         // Draw board
-        for(int i = 0; i < Board.getInstance().maxBoardCol; i++){
-            for (int j = 0; j < Board.getInstance().maxBoardRow; j++){
-                if (Board.getInstance().revealed[i][j] && Board.getInstance().mines[i][j] == 1){
+        for (int i = 0; i < Board.getInstance().maxBoardCol; i++) {
+            for (int j = 0; j < Board.getInstance().maxBoardRow; j++) {
+                if (Board.getInstance().revealed[i][j] && Board.getInstance().mines[i][j] == 1) {
                     g2.setColor(Color.red);
-                } else if (Board.getInstance().revealed[i][j]){
+                } else if (Board.getInstance().revealed[i][j]) {
                     g2.setColor(Color.lightGray);
                 } else
                     g2.setColor(Color.gray);
                 g2.fillRect(spacing+i*60, spacing+j*60+60,60-2*spacing,60-2*spacing);
 
-                if (Board.getInstance().revealed[i][j] && Board.getInstance().mines[i][j] == 1){
+                if (Board.getInstance().revealed[i][j] && Board.getInstance().mines[i][j] == 1) {
                     g2.setColor(Color.black);
                     g2.drawString("*",i*60+Board.getInstance().maxBoardCol+2,j*60+60+50);
-                } else if (Board.getInstance().revealed[i][j]){
+                } else if (Board.getInstance().revealed[i][j]) {
                     g2.setColor(Color.black);
                     g2.drawString(Integer.toString(Board.getInstance().numbers[i][j]),i*60+Board.getInstance().maxBoardCol,j*60+60+45);
                 }
@@ -139,7 +142,7 @@ public class GamePanel extends JPanel implements Runnable {
                 if(mouseX >= spacing+i*60
                     && mouseX <= 60-spacing+i*60
                     && mouseY >= spacing + j*60 + 60
-                    && mouseY <= j*60 + 120-spacing){
+                    && mouseY <= j*60 + 120-spacing) {
                     return i;
                 }
             }
@@ -154,7 +157,7 @@ public class GamePanel extends JPanel implements Runnable {
                 if(mouseX >= spacing+i*60
                     && mouseX <= 60-spacing+i*60
                     && mouseY >= spacing + j*60 + 60
-                    && mouseY <= j*60 + 120-spacing){
+                    && mouseY <= j*60 + 120-spacing) {
                     return j;
                 }
             }
