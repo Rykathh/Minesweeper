@@ -90,8 +90,6 @@ public class GamePanel extends JPanel implements Runnable {
         g3.setColor(Color.black);
         g3.drawString("RESET",190,45);
         
-        
-        
         // Draw win/lose button
         if (Board.getInstance().gameLose) {
             g2.setColor(Color.white);
@@ -184,5 +182,4 @@ public class GamePanel extends JPanel implements Runnable {
         }
         return false;
     }
-
 }

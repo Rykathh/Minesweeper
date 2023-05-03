@@ -13,6 +13,7 @@ public class Board {
 
     boolean gameWin = false;
     boolean gameLose = false;
+    
     boolean click = true;
 
     private static Board board = new Board();
@@ -73,10 +74,10 @@ public class Board {
         }
     }
 
-    public void revealBox(int x, int y) { 	
-	        revealed[x][y] = true;
-	        int[] coordinate = {x,y};
-	        undoStack.push(coordinate);
+    public void revealBox(int x, int y) {
+        revealed[x][y] = true;
+        int[] coordinate = {x,y};
+        undoStack.push(coordinate
     }
 
     public void init() {

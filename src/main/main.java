@@ -10,15 +10,14 @@ public class main {
         window.setResizable(false);
         window.setTitle("Minesweeper");
 
-        GamePanel gamePanel = new GamePanel();
-        window.add(gamePanel);
+        window.add(GamePanel.getInstance());
 
         window.pack();
 
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
-        gamePanel.startGameThread();
+        GamePanel.getInstance().startGameThread();
 
     }
 }
