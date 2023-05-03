@@ -16,7 +16,9 @@ public class Click implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (GamePanel.getInstance().inBoxX() != -1 && GamePanel.getInstance().inBoxY() != -1) {
-            Board.getInstance().revealBox(GamePanel.getInstance().inBoxX(),GamePanel.getInstance().inBoxY());
+            if(!Board.getInstance().gameLose) {
+                Board.getInstance().revealBox(GamePanel.getInstance().inBoxX(),GamePanel.getInstance().inBoxY());
+            }
         }
 
         if (GamePanel.getInstance().inUndoBox()) {
@@ -26,7 +28,6 @@ public class Click implements MouseListener {
         if (GamePanel.getInstance().inResetBox()) {
         	Board.getInstance().resetGame();
         }
-        
     }
 
     @Override

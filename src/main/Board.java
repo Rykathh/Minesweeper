@@ -65,7 +65,7 @@ public class Board {
                 if (numbers[i][j]<0) {
                     if (revealed[i][j]) {
                         gameLose = true;
-                        undoStack.clear();
+                        // undoStack.clear();
                         click = false;
                         break;
                     }

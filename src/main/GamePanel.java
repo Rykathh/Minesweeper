@@ -67,9 +67,6 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         Board.getInstance().checkLose();
         Board.getInstance().checkWin();
-        if (Board.getInstance().gameLose || Board.getInstance().gameWin) {
-            Board.getInstance().revealAll();
-        }
     }
 
     public void paintComponent(Graphics g) {
