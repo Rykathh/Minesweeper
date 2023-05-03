@@ -22,6 +22,11 @@ public class Click implements MouseListener {
         if (GamePanel.getInstance().inUndoBox()) {
             Board.getInstance().undoMove();
         }
+        
+        if (GamePanel.getInstance().inResetBox()) {
+        	Board.getInstance().resetGame();
+        }
+        
     }
 
     @Override

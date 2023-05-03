@@ -81,6 +81,15 @@ public class GamePanel extends JPanel implements Runnable {
         g2.setColor(Color.black);
         g2.drawString("UNDO",12,45);
 
+        //Draw reset button
+        Graphics2D g3 = (Graphics2D) g;
+        	
+        g3.setColor(Color.yellow);
+        g3.fillRect(180, 7, 150, 48);
+        g3.setFont(new Font("Tahoma", Font.BOLD, 40));
+        g3.setColor(Color.black);
+        g3.drawString("RESET",190,45);
+        
         // Draw win/lose button
         if (Board.getInstance().gameLose) {
             g2.setColor(Color.white);
@@ -163,5 +172,14 @@ public class GamePanel extends JPanel implements Runnable {
         }
         return false;
     }
-
+    
+    public boolean inResetBox() {
+        if(mouseX >= 180
+            && mouseX <= 330
+            && mouseY >= spacing
+            && mouseY <= 48-spacing) {
+            return true;
+        }
+        return false;
+    }
 }

@@ -13,8 +13,10 @@ public class Board {
 
     boolean gameWin = false;
     boolean gameLose = false;
+    
+    boolean click = true;
 
-    private static final Board board = new Board();
+    private static Board board = new Board();
     private Board(){
         init();
     }
@@ -31,6 +33,12 @@ public class Board {
             revealed[prevState[0]][prevState[1]] = false;
         }
     }
+    
+    //Reset function    
+    public void resetGame() {
+    	undoStack.clear();
+    	board = new Board();
+    }
 
     // Implement check for win conditions
     public void checkWin () {
@@ -39,12 +47,14 @@ public class Board {
                 if (numbers[i][j]>0) {
                     if (!revealed[i][j]){
                         gameWin = false;
+                        click = false;
                         return;
                     }
                 }
             }
         }
-        gameWin = true;
+        gameWin = true;   
+        undoStack.clear();
     }
 
     // Implement check for lose conditions
@@ -55,6 +65,8 @@ public class Board {
                 if (numbers[i][j]<0) {
                     if (revealed[i][j]){
                         gameLose = true;
+                        undoStack.clear();
+                        click = false;
                         break;
                     }
                 }
@@ -65,7 +77,7 @@ public class Board {
     public void revealBox(int x, int y) {
         revealed[x][y] = true;
         int[] coordinate = {x,y};
-        undoStack.push(coordinate);
+        undoStack.push(coordinate
     }
 
     public void init() {
